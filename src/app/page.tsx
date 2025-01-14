@@ -1,26 +1,49 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Header from "@/app/_components/header";
+"use client";
 
-export const metadata: Metadata = {
-  title: "NextBlogApp",
-  description: "Built to learn Next.js and modern web development.",
-};
+import { useEffect, useState } from "react";
+import PostSummary from "./_components/PostSummary";
+import type { Post } from "@/app/_types/Post";
 
-type Props = {
-  children: React.ReactNode;
-};
+const PostList = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-const RootLayout: React.FC<Props> = (props) => {
-  const { children } = props;
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch("/api/posts");
+        const data = await res.json();
+        setPosts(data);
+        setLoading(false);
+      } catch (error) {
+        setError("投稿記事の取得に失敗しました");
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) return <div>読み込み中...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
-    <html lang="ja">
-      <body>
-        <Header />
-        <div>{children}</div>
-      </body>
-    </html>
+    <main>
+      <h1>記事一覧</h1>
+      {posts.length === 0 ? (
+        <p>記事がありません。</p>
+      ) : (
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>
+              <PostSummary post={post} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
   );
 };
 
-export default RootLayout;
+export default PostList;

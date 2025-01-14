@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Header from "@/app/_components/header";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
-
-import Header from "@/app/_components/header";
 
 export const metadata: Metadata = {
   title: "NextBlogApp",
