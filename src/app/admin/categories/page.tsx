@@ -39,7 +39,21 @@ export default function CategoriesPage() {
   };
 
   const handleDelete = (id: string) => {
-    router.push(`/admin/categories/${id}`);
+    // 削除処理を追加
+    if (confirm("本当に削除しますか？")) {
+      fetch(`/api/admin/categories/${id}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("削除に失敗しました");
+          }
+          setCategories(categories.filter((category) => category.id !== id));
+        })
+        .catch((err) => {
+          setError(err.message || "エラーが発生しました");
+        });
+    }
   };
 
   const handleCreate = () => {

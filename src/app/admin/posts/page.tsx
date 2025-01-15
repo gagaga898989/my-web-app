@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PostSummary from "@/app/_components/PostSummary";
 import type { Post } from "@/app/_types/Post";
+import type { Category } from "@/app/_types/Category";
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -121,6 +123,7 @@ export default function PostsPage() {
                     fontSize: "14px",
                   }}
                 >
+                  <></>
                   編集
                 </button>
                 <button
