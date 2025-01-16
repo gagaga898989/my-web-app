@@ -8,4 +8,5 @@ export type Post = {
   createdAt: string;
   categories: Category[];
   coverImage: CoverImage;
+  likes?: number;
 };

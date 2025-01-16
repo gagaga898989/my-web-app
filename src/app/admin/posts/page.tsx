@@ -37,7 +37,6 @@ export default function PostsPage() {
   };
 
   const handleDelete = (id: string) => {
-    // 削除処理を追加
     if (confirm("本当に削除しますか？")) {
       fetch(`/api/admin/posts/${id}`, {
         method: "DELETE",
@@ -108,7 +107,14 @@ export default function PostsPage() {
                 backgroundColor: "#fff",
               }}
             >
-              <PostSummary post={post} />
+              {/* PostSummaryを非インタラクティブなバージョンに変更 */}
+              <div>
+                <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>
+                  {post.title}
+                </h2>
+                <p>いいね数: {post.likes}</p>
+                <p>{post.content.slice(0, 100)}...</p>
+              </div>
               <div style={{ marginTop: "10px", textAlign: "right" }}>
                 <button
                   onClick={() => handleEdit(post.id)}
@@ -123,7 +129,6 @@ export default function PostsPage() {
                     fontSize: "14px",
                   }}
                 >
-                  <></>
                   編集
                 </button>
                 <button

@@ -215,6 +215,22 @@ const EditPage: React.FC = () => {
           {isSubmitting ? "保存中..." : "保存"}
         </button>
       </form>
+      <button
+        onClick={() => window.history.back()} // 修正: onClick 属性を適切に設定
+        style={{
+          position: "fixed",
+          right: "20px",
+          bottom: "20px",
+          padding: "10px",
+          borderRadius: "5px",
+          backgroundColor: "blue",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        戻る
+      </button>
     </main>
   );
 };

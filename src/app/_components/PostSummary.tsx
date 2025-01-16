@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
 import DOMPurify from "isomorphic-dompurify";
 import Link from "next/link";
+import { useState } from "react";
 
 type Props = {
   post: Post;
@@ -15,6 +16,32 @@ const PostSummary: React.FC<Props> = (props) => {
   const safeHTML = DOMPurify.sanitize(post.content, {
     ALLOWED_TAGS: ["b", "strong", "i", "em", "u", "br"],
   });
+
+  const [likes, setLikes] = useState<number>(post.likes || 0);
+  const [isLiking, setIsLiking] = useState<boolean>(false);
+
+  const handleLike = async () => {
+    setIsLiking(true);
+    try {
+      const res = await fetch("/api/posts", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: post.id }),
+      });
+
+      if (res.ok) {
+        const updatedPost = await res.json();
+        setLikes(updatedPost.likes);
+      } else {
+        console.error("Failed to update likes:", await res.json());
+      }
+    } catch (error) {
+      console.error("Error while liking the post:", error);
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
   return (
     <div className="border border-slate-400 p-3">
       <div className="flex items-center justify-between">
@@ -43,6 +70,20 @@ const PostSummary: React.FC<Props> = (props) => {
           dangerouslySetInnerHTML={{ __html: safeHTML }}
         />
       </Link>
+      <div className="mt-3 flex items-center space-x-3">
+        <button
+          onClick={handleLike}
+          className={twMerge(
+            "rounded-md px-3 py-1 text-sm font-bold",
+            "border border-blue-400 text-blue-600",
+            isLiking ? "bg-blue-200" : "bg-white"
+          )}
+          disabled={isLiking}
+        >
+          {isLiking ? "いいね中..." : "いいね"}
+        </button>
+        <div className="text-sm text-slate-600">いいね数: {likes}</div>
+      </div>
     </div>
   );
 };

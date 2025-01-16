@@ -23,6 +23,7 @@ model Post {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   categories     PostCategory[]
+  likes     Int      @default(0) // いいね数
 }
 
 // カテゴリテーブル
