@@ -7,8 +7,19 @@ import {
   faMagnifyingGlass,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { supabase } from "@/utils/supabase"; // ◀ 追加
+import { useAuth } from "@/app/_hooks/useAuth"; // ◀ 追加
+import { useRouter } from "next/navigation"; // ◀ 追加
 
 const Header: React.FC = () => {
+  // ▼ 追加
+  const router = useRouter();
+  const { isLoading, session } = useAuth();
+  const logout = async () => {
+    await supabase.auth.signOut();
+    router.replace("/");
+  };
+
   return (
     <header>
       <div className="bg-slate-800 py-2">
@@ -36,6 +47,14 @@ const Header: React.FC = () => {
             <div>
               <Link href="/about">About</Link>
             </div>
+            {/* ▼ 追加 */}
+            {!isLoading &&
+              (session ? (
+                <button onClick={logout}>Logout</button>
+              ) : (
+                <Link href="/login">Login</Link>
+              ))}
+            {/* ▲ 追加 */}
           </div>
         </div>
       </div>
