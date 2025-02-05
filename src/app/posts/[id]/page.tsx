@@ -8,6 +8,7 @@ interface Post {
   title: string;
   content: string;
   coverImageURL: string;
+  moveing : string;
   categories: { categoryId: string; category: { name: string } }[];
 }
 
@@ -53,6 +54,7 @@ const PostDetail = () => {
         alt={post?.title}
         style={{ maxWidth: "100%", height: "auto", marginBottom: "20px" }}
       />
+      
       <div
         dangerouslySetInnerHTML={{ __html: post?.content || "" }}
         style={{ marginBottom: "20px" }}

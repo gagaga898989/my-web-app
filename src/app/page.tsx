@@ -1,49 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import PostSummary from "./_components/PostSummary";
-import type { Post } from "@/app/_types/Post";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const PostList = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+export default function MainPage() {
+  const router = useRouter();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch("/api/posts");
-        const data = await res.json();
-        setPosts(data);
-        setLoading(false);
-      } catch (error) {
-        setError("投稿記事の取得に失敗しました");
-        setLoading(false);
-      }
-    };
+  const navigateToBlog = () => {
+    router.push("/blog");
+  };
 
-    fetchPosts();
-  }, []);
-
-  if (loading) return <div>読み込み中...</div>;
-  if (error) return <div>{error}</div>;
+  const navigateToTodo = () => {
+    router.push("/todo");
+  };
 
   return (
-    <main>
-      <h1>記事一覧</h1>
-      {posts.length === 0 ? (
-        <p>記事がありません。</p>
-      ) : (
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id}>
-              <PostSummary post={post} />
-            </li>
-          ))}
-        </ul>
-      )}
+    <main style={{ padding: "20px", textAlign: "center" }}>
+      <h1>メインページ</h1>
+      <div style={{ marginTop: "20px" }}>
+        {/* Linkを使ったバージョン */}
+        <Link href="/blog">
+          <button
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#0070f3",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              marginRight: "10px",
+            }}
+          >
+            ブログへ
+          </button>
+        </Link>
+
+        <Link href="/todo">
+          <button
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#28A745",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Todoアプリへ
+          </button>
+        </Link>
+      </div>
     </main>
   );
-};
-
-export default PostList;
+}

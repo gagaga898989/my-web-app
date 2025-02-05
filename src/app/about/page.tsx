@@ -22,6 +22,22 @@ const Page: React.FC = () => {
           className="rounded-full border-4 border-slate-500 p-1.5"
         />
       </div>
+      <button
+        onClick={() => alert("設定ボタンがクリックされました")}
+        style={{
+          position: "fixed",
+          right: "20px",
+          bottom: "20px",
+          padding: "10px",
+          borderRadius: "5px",
+          backgroundColor: "skyblue",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        設定
+      </button>
     </main>
   );
 };
