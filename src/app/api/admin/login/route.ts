@@ -9,12 +9,12 @@ const supabase = createClient(
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const { email, password, displayname } = await req.json();
 
     // 必須項目が存在しない場合はエラーレスポンス
-    if (!email || !password) {
+    if (!email || !password || !displayname) {
       return NextResponse.json(
-        { error: "メールアドレスとパスワードは必須です。" },
+        { error: "メールアドレス、パスワード、表示名は必須です。" },
         { status: 400 }
       );
     }
@@ -23,8 +23,8 @@ export async function POST(req: Request) {
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       password,
-      email_confirm: true, // これを追加するとメール確認済みとして登録される
-      user_metadata: { role: "admin" },
+      email_confirm: true, // メール確認済みとして登録
+      user_metadata: { role: "admin", displayname }, // user_metadataにも保存
     });
 
     // エラーが発生した場合

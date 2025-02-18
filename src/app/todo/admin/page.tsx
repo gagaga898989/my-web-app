@@ -68,7 +68,7 @@ const AddTask: React.FC<AddTaskProps> = ({ onAdd }) => {
     };
 
     try {
-      const response = await fetch("/api/addTodo", {
+      const response = await fetch("/api/todo/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTodo),

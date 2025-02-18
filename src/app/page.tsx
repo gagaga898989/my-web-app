@@ -15,37 +15,18 @@ export default function MainPage() {
   };
 
   return (
-    <main style={{ padding: "20px", textAlign: "center" }}>
-      <h1>メインページ</h1>
-      <div style={{ marginTop: "20px" }}>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-500 to-green-500 text-white">
+      <h1 className="mb-8 text-4xl font-bold">メインページ</h1>
+      <div className="space-x-4">
         {/* Linkを使ったバージョン */}
         <Link href="/blog">
-          <button
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#0070f3",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              marginRight: "10px",
-            }}
-          >
+          <button className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white shadow-md transition-all hover:bg-blue-700">
             ブログへ
           </button>
         </Link>
 
         <Link href="/todo">
-          <button
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#28A745",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
+          <button className="rounded-lg bg-green-600 px-6 py-3 font-semibold text-white shadow-md transition-all hover:bg-green-700">
             Todoアプリへ
           </button>
         </Link>

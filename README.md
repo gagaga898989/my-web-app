@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 開発履歴
 
-## Getting Started
+- 2024年11月24日：プロジェクト開始
+- 2024年1月10日：追加機能実装
+- 2024年2月8日 : 大型アップデート実装
+  　(内容　前回作成のTODOアプリとの統合
+  　 　　　新規ユーザー登録機能実装)
 
-First, run the development server:
+## アプリの概要
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+12月ごろに実装したTODOアプリと新たに開発したブログアプリが統合して総合アプリに大型アップデート！
+１．前回に展望として記載したログインにおけるメール＆パスワード認証機能を実装
+２．ブログ機能も追加！TODOで頑張ったことを呟こう
+３．Supabase等を利用することで前回展望で語ったデータサーバーによるグローバルな使用を実現！
+　　別の端末であってもデータを閲覧可能に
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## アプリの使用方法
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+ユーザー登録をしなくてもブログの閲覧やTODOリストのゲストモードでのブラウジングは可能です。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 創意工夫点
 
-## Learn More
+##　将来の展望
 
-To learn more about Next.js, take a look at the following resources:
+ログイン機能とポイント機能があるので、タスクやユーザー情報を
+　ローカルストレージではなくデータサーバーに変更することでグローバルに使用できます。
+　また、ミニゲームアプリ等と連携することによって、今日完了したタスクの
+　ポイントに応じて遊べるゲームが増える等ご褒美機能の実装も考えています。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ライセンス
