@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // useRouterをインポート
 import { Todo } from "@/app/_types/todo";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
@@ -11,6 +12,7 @@ interface AddTaskProps {
 }
 
 const AddTask: React.FC<AddTaskProps> = ({ onAdd }) => {
+  const router = useRouter(); // useRouterのインスタンスを作成
   const [newTodoName, setNewTodoName] = useState("");
   const [newTodoPriority, setNewTodoPriority] = useState(3);
   const [newTodoDeadline, setNewTodoDeadline] = useState<Date | null>(null);
@@ -80,6 +82,7 @@ const AddTask: React.FC<AddTaskProps> = ({ onAdd }) => {
 
       onAdd(newTodo);
       resetForm();
+      router.push("/todo"); // タスク追加後に /todo にリダイレクト
     } catch (error) {
       setApiError("タスクの追加に失敗しました。再試行してください。");
       console.error("タスク追加に失敗しました:", error);
