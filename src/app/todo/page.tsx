@@ -5,7 +5,6 @@ import { Todo } from "@/app/_types/todo";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
-// Supabaseクライアントの初期化
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -14,60 +13,47 @@ const supabase = createClient(
 const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [apiError, setApiError] = useState<string>("");
-  const [username, setUsername] = useState<string>(""); // ユーザーネームの状態管理
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // ログイン状態を管理
+  const [username, setUsername] = useState<string>("");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  // ログインユーザーの情報を取得
+  // ユーザー情報を取得
   const fetchUser = async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error) {
-      console.error("ユーザー情報の取得に失敗しました:", error);
-      setIsLoggedIn(false);
-      return;
-    }
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
 
-    const user = data?.user;
-    if (user) {
-      setIsLoggedIn(true);
-      if (user.user_metadata && user.user_metadata.displayname) {
-        setUsername(user.user_metadata.displayname); // displaynameを状態にセット
+      const user = data?.user;
+      if (user) {
+        setIsLoggedIn(true);
+        setUsername(user.user_metadata?.displayname || "ゲスト");
+      } else {
+        setIsLoggedIn(false);
+        setUsername("");
       }
-    } else {
+    } catch (error) {
+      console.error("ユーザー情報の取得に失敗:", error);
+      setApiError("ログイン情報の取得に失敗しました。");
       setIsLoggedIn(false);
-      setUsername(""); // ゲストモードの場合
+      setUsername("");
     }
   };
 
   // Todo一覧を取得
   const fetchTodos = async () => {
     try {
-      const response = await fetch("/api/todo");
-      if (!response.ok) {
-        throw new Error("タスク取得のAPIエラー");
-      }
+      const response = await fetch("/api/todo", {
+        method: "GET",
+        headers: { "Cache-Control": "no-cache" }, // キャッシュ無効化
+      });
+      if (!response.ok) throw new Error("タスク取得APIエラー");
+
       const data = await response.json();
       setTodos(data);
     } catch (error) {
+      console.error("タスク取得に失敗:", error);
       setApiError("タスクの取得に失敗しました。再試行してください。");
-      console.error("タスク取得に失敗しました:", error);
     }
   };
-
-  // ログアウト処理
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("ログアウトに失敗しました:", error);
-      return;
-    }
-    setIsLoggedIn(false);
-    setUsername("");
-  };
-
-  useEffect(() => {
-    fetchUser(); // ユーザー情報を取得
-    fetchTodos();
-  }, []);
 
   // Todoの完了状態を更新
   const updateIsDone = async (id: string, isDone: boolean) => {
@@ -78,9 +64,7 @@ const TodoList: React.FC = () => {
         body: JSON.stringify({ id, isDone }),
       });
 
-      if (!response.ok) {
-        throw new Error("タスク更新のAPIエラー");
-      }
+      if (!response.ok) throw new Error("タスク更新APIエラー");
 
       setTodos((prevTodos) =>
         prevTodos.map((todo) =>
@@ -88,26 +72,67 @@ const TodoList: React.FC = () => {
         )
       );
     } catch (error) {
-      console.error("タスクの更新に失敗しました:", error);
+      console.error("タスク更新に失敗:", error);
+      setApiError("タスクの更新に失敗しました。再試行してください。");
     }
   };
 
   // Todoを削除
-  const remove = async (id: string) => {
+  const removeTodo = async (id: string) => {
     try {
       const response = await fetch(`/api/todo/admin?id=${id}`, {
         method: "DELETE",
       });
 
-      if (!response.ok) {
-        throw new Error("タスク削除のAPIエラー");
-      }
+      if (!response.ok) throw new Error("タスク削除APIエラー");
 
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
     } catch (error) {
-      console.error("タスクの削除に失敗しました:", error);
+      console.error("タスク削除に失敗:", error);
+      setApiError("タスクの削除に失敗しました。再試行してください。");
     }
   };
+
+  // ログアウト
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      setIsLoggedIn(false);
+      setUsername("");
+    } catch (error) {
+      console.error("ログアウトに失敗:", error);
+      setApiError("ログアウトに失敗しました。再試行してください。");
+    }
+  };
+
+  // 初期化処理
+  useEffect(() => {
+    const initialize = async () => {
+      await fetchUser(); // ユーザー情報取得
+      await fetchTodos(); // タスク取得
+
+      // Supabaseのリアルタイムリスニング
+      const channel = supabase
+        .channel("todos")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "todos" },
+          (payload) => {
+            console.log("リアルタイム更新:", payload);
+            fetchTodos(); // データを再取得
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    };
+
+    initialize();
+  }, []);
 
   return (
     <div className="mx-4 mt-10 max-w-2xl md:mx-auto">
@@ -121,7 +146,6 @@ const TodoList: React.FC = () => {
       )}
       <div className="mb-4 flex items-center justify-between">
         {isLoggedIn ? (
-          // ログインしている場合はログアウトボタンを表示
           <button
             onClick={handleLogout}
             className="rounded-md bg-red-500 px-3 py-1 font-bold text-white hover:bg-red-600"
@@ -129,12 +153,10 @@ const TodoList: React.FC = () => {
             ログアウト
           </button>
         ) : (
-          // ログインしていない場合はログインボタンを表示
           <button className="rounded-md bg-blue-500 px-3 py-1 font-bold text-white hover:bg-blue-600">
             <Link href="/login">ログイン</Link>
           </button>
         )}
-        {/* 新規作成ボタン */}
         <button className="rounded-md bg-green-500 px-3 py-1 font-bold text-white hover:bg-green-600">
           <Link href="/todo/admin">新規作成</Link>
         </button>
@@ -158,7 +180,7 @@ const TodoList: React.FC = () => {
               {todo.isDone ? "未完了にする" : "完了"}
             </button>
             <button
-              onClick={() => remove(todo.id)}
+              onClick={() => removeTodo(todo.id)}
               className="rounded bg-red-500 px-2 py-1 text-white"
             >
               削除
