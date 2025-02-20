@@ -48,6 +48,7 @@ const TodoList: React.FC = () => {
       if (!response.ok) throw new Error("タスク取得APIエラー");
 
       const data = await response.json();
+      console.log("取得したTodos:", data);
       setTodos(data);
     } catch (error) {
       console.error("タスク取得に失敗:", error);
@@ -71,6 +72,7 @@ const TodoList: React.FC = () => {
           todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
         )
       );
+      console.log("Todoの完了状態が更新されました");
     } catch (error) {
       console.error("タスク更新に失敗:", error);
       setApiError("タスクの更新に失敗しました。再試行してください。");
@@ -87,6 +89,7 @@ const TodoList: React.FC = () => {
       if (!response.ok) throw new Error("タスク削除APIエラー");
 
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+      console.log("Todoが削除されました");
     } catch (error) {
       console.error("タスク削除に失敗:", error);
       setApiError("タスクの削除に失敗しました。再試行してください。");
@@ -101,6 +104,7 @@ const TodoList: React.FC = () => {
 
       setIsLoggedIn(false);
       setUsername("");
+      console.log("ログアウトが完了しました");
     } catch (error) {
       console.error("ログアウトに失敗:", error);
       setApiError("ログアウトに失敗しました。再試行してください。");
@@ -128,11 +132,17 @@ const TodoList: React.FC = () => {
 
       return () => {
         supabase.removeChannel(channel);
+        console.log("リアルタイムチャンネルを削除しました");
       };
     };
 
     initialize();
   }, []);
+
+  // 状態の更新とログの確認
+  useEffect(() => {
+    console.log("Todos状態:", todos);
+  }, [todos]);
 
   return (
     <div className="mx-4 mt-10 max-w-2xl md:mx-auto">
