@@ -145,6 +145,11 @@ const TodoList: React.FC = () => {
           <div key={todo.id} className="flex items-center gap-2 border p-2">
             <span className={todo.isDone ? "text-gray-500 line-through" : ""}>
               {todo.name}
+              重要度: {todo.priority}
+              期限:
+              {todo.deadline
+                ? new Date(todo.deadline).toLocaleString()
+                : "設定なし"}
             </span>
             <button
               onClick={() => updateIsDone(todo.id, todo.isDone)}

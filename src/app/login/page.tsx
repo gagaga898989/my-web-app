@@ -25,7 +25,6 @@ const Page: React.FC = () => {
     setEmailError("");
   };
 
-  // フォームのログインボタンが押下されたときの処理
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -45,7 +44,7 @@ const Page: React.FC = () => {
         return;
       }
       console.log("ログイン処理に成功しました。");
-      router.replace("/active");
+      router.replace("/ ");
     } catch (error) {
       setLoginError("ログイン処理中に予期せぬエラーが発生しました。");
       console.error(JSON.stringify(error, null, 2));
@@ -97,7 +96,7 @@ const Page: React.FC = () => {
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex flex-col items-center space-y-4">
           <button
             type="submit"
             className={twMerge(
@@ -113,6 +112,16 @@ const Page: React.FC = () => {
             }
           >
             ログイン
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/login/admin")}
+            className={twMerge(
+              "rounded-md px-5 py-1 font-bold",
+              "bg-gray-500 text-white hover:bg-gray-600"
+            )}
+          >
+            新規作成
           </button>
         </div>
       </form>

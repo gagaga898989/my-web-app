@@ -40,7 +40,7 @@ export default function AdminRegister() {
 
   return (
     <div className="mx-auto mt-10 max-w-md rounded border p-4 shadow">
-      <h2 className="mb-4 text-xl font-bold">管理者登録</h2>
+      <h2 className="mb-4 text-xl font-bold">新規ユーザー登録</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
